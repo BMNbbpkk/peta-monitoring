@@ -1,12 +1,19 @@
-var lokasi = [
+const data = [
   {
-    "nama": "Gudang A",
-    "lat": -6.816955,
-    "lng": 107.617119
+    "Nama Barang": "Laci Box",
+    "Kode Barang": "3050104024",
+    "Ruangan": "Umum",
+    "Koordinat": "-6.813333,107.615",
+    "Kondisi": "Rusak Berat",
+    "Terakhir Dicek": "10-6-2024"
   },
   {
-    "nama": "Gudang B",
-    "lat": -6.818340,
-    "lng": 107.615300
+    "Nama Barang": "Meja",
+    "Kode Barang": "2050104024",
+    "Ruangan": "Umum",
+    "Koordinat": "-6.813333,107.615",
+    "Kondisi": "Rusak Ringan",
+    "Terakhir Dicek": "10-6-2025"
   }
 ];
+
