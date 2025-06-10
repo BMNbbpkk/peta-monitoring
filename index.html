@@ -20,7 +20,6 @@
   <div id="map"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="data.js"></script>
   <script>
     const map = L.map('map').setView([-6.813333, 107.615], 17);
 
@@ -28,37 +27,47 @@
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    data.forEach(item => {
-      if (!item["Koordinat"]) return;
+    // Ganti "Sheet1" kalau nama sheet kamu berbeda
+    const sheetURL = 'https://opensheet.elk.sh/2PACX-1vRSym1w-sN1OxdNX-o3vpOY-x35fsrjy7zzuqaF5P83n_D9OW2YSZPTeLFubY_3Ky73MeCKUamdAQCC/DataBarang';
 
-      const koordinat = item["Koordinat"].split(',').map(k => parseFloat(k.trim()));
-      if (koordinat.length !== 2 || isNaN(koordinat[0]) || isNaN(koordinat[1])) {
-        console.warn("Koordinat tidak valid:", item);
-        return;
-      }
+    fetch(sheetURL)
+      .then(response => response.json())
+      .then(data => {
+        data.forEach(item => {
+          if (!item["Koordinat"]) return;
 
-      const [lat, lng] = koordinat;
+          const koordinat = item["Koordinat"].split(',').map(k => parseFloat(k.trim()));
+          if (koordinat.length !== 2 || isNaN(koordinat[0]) || isNaN(koordinat[1])) {
+            console.warn("Koordinat tidak valid:", item);
+            return;
+          }
 
-      let color = 'green';
-      const kondisi = (item["Kondisi"] || '').toLowerCase();
-      if (kondisi.includes('berat')) color = 'red';
-      else if (kondisi.includes('ringan')) color = 'orange';
+          const [lat, lng] = koordinat;
 
-      const marker = L.circleMarker([lat, lng], {
-        radius: 10,
-        color: color,
-        fillColor: color,
-        fillOpacity: 0.7
-      }).addTo(map);
+          let color = 'green';
+          const kondisi = (item["Kondisi"] || '').toLowerCase();
+          if (kondisi.includes('berat')) color = 'red';
+          else if (kondisi.includes('ringan')) color = 'orange';
 
-      marker.bindPopup(`
-        <b>${item["Nama Barang"] || "Tanpa Nama"}</b><br>
-        Kode: ${item["Kode Barang"] || "-"}<br>
-        Ruangan: ${item["Ruangan"] || "-"}<br>
-        Kondisi: ${item["Kondisi"] || "-"}<br>
-        Dicek: ${item["Terakhir Dicek"] || "-"}
-      `);
-    });
+          const marker = L.circleMarker([lat, lng], {
+            radius: 10,
+            color: color,
+            fillColor: color,
+            fillOpacity: 0.7
+          }).addTo(map);
+
+          marker.bindPopup(`
+            <b>${item["Nama Barang"] || "Tanpa Nama"}</b><br>
+            Kode: ${item["Kode Barang"] || "-"}<br>
+            Ruangan: ${item["Ruangan"] || "-"}<br>
+            Kondisi: ${item["Kondisi"] || "-"}<br>
+            Dicek: ${item["Terakhir Dicek"] || "-"}
+          `);
+        });
+      })
+      .catch(error => {
+        console.error("Gagal memuat data:", error);
+      });
   </script>
 </body>
 </html>
